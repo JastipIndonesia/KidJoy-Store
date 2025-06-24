@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidJoy Store - Mainan Edukatif & Seru untuk Anak</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import { getDatabase, ref, set, get, onValue, push, update, remove } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCslS7aFjKBN_ZxzsyGN3fTo7_CHB6DpvQ",
+            authDomain: "kidjoy-store-1956c.firebaseapp.com",
+            databaseURL: "https://kidjoy-store-1956c-default-rtdb.firebaseio.com",
+            projectId: "kidjoy-store-1956c",
+            storageBucket: "kidjoy-store-1956c.firebasestorage.app",
+            messagingSenderId: "144736666252",
+            appId: "1:144736666252:web:0211bd9e5e154bf541b1a9"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const storage = getStorage(app);
+
+        // Make Firebase available globally
+        window.firebase = {
+            database,
+            storage,
+            ref,
+            set,
+            get,
+            onValue,
+            push,
+            update,
+            remove,
+            storageRef,
+            uploadBytes,
+            getDownloadURL
+        };
+
+        console.log('Firebase initialized successfully!');
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: bold;
+        }
+
+        .admin-btn {
+            background: #ff6b6b !important;
+        }
+
+        .admin-btn:hover {
+            background: #ff5252 !important;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            padding: 4rem 0;
+            text-align: center;
+            color: #333;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 4rem 0;
+            background: #f8f9fa;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .category-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .category-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .category-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .product-count {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Products Section */
+        .products {
+            padding: 4rem 0;
+            background: white;
+            display: none;
+        }
+
+        .products.active {
+            display: block;
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #dee2e6;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            color: #ff6b6b;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .product-description {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .order-btn {
+            width: 100%;
+            background: #25d366;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .order-btn:hover {
+            background: #20c158;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            padding: 2rem 0;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            background: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+        }
+
+        .tab-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .file-input-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-button {
+            background: #667eea;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            text-align: left;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-input-button:hover {
+            background: #5a6fd8;
+        }
+
+        .file-input-hidden {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .image-preview {
+            margin-top: 10px;
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            display: none;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 1rem;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 0;
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: #667eea;
+            min-width: 60px;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .contact-item {
+            padding: 1.5rem;
+        }
+
+        .contact-item i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #ffd700;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Status Indicators */
+        .firebase-status {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            display: none;
+        }
+
+        .firebase-status.offline {
+            background: #dc3545;
+        }
+
+        .firebase-status.loading {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .admin-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .quick-add-btn, .logout-btn {
+            background: #17a2b8;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            transition: background 0.3s;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25d366;
+            color: white;
+            border-radius: 50px;
+            padding: 15px 20px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+
+        .data-counter {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: #6c757d;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 1000;
+        }
+
+        /* Login Modal */
+        .login-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .login-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .login-header {
+            margin-bottom: 2rem;
+        }
+
+        .login-header i {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .login-form {
+            text-align: left;
+        }
+
+        .password-input {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .password-input input {
+            width: 100%;
+            padding: 12px 45px 12px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .login-btn:hover {
+            opacity: 0.9;
+        }
+
+        .login-error {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* Quick Add Modal */
+        .quick-add-modal {
+            display: none;
+            position: fixed;
+            z-index: 1002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .quick-add-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Firebase Status -->
+    <div id="firebase-status" class="firebase-status loading">
+        <i class="fas fa-cloud"></i> Connecting to Firebase...
+    </div>
+
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo" onclick="goHome()">
+                <i class="fas fa-rocket"></i>
+                KidJoy Store
+            </div>
+            <ul class="nav-links">
+                <li><button onclick="navigateTo('home')" class="nav-btn">Home</button></li>
+                <li><button onclick="navigateTo('categories')" class="nav-btn">Kategori</button></li>
+                <li><button onclick="navigateTo('about')" class="nav-btn">Tentang</button></li>
+                <li><button onclick="navigateTo('contact')" class="nav-btn">Kontak</button></li>
+                <li><button onclick="openAdminPanel()" class="admin-btn"><i class="fas fa-cog"></i> Admin</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Hero Section -->
+        <section class="hero" id="home-section">
+            <div class="container">
+                <h1><i class="fas fa-star"></i> Mainan Seru & Edukatif untuk Si Kecil!</h1>
+                <p>Temukan koleksi mainan berkualitas import langsung dari China dengan harga terjangkau. Aman, edukatif, dan bikin anak happy!</p>
+                <a href="#" onclick="scrollToContact()" class="cta-button">
+                    <i class="fab fa-whatsapp"></i> Pesan Sekarang
+                </a>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="categories" id="categories-section">
+            <div class="container">
+                <h2 class="section-title">Kategori Mainan Pilihan</h2>
+                <div class="category-grid" id="category-grid">
+                    <!-- Categories will be loaded from Firebase -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section class="products" id="products-section">
+            <div class="container">
+                <div class="products-header">
+                    <button class="back-btn" onclick="showSection('categories')">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Kategori
+                    </button>
+                    <h2 id="category-title">Produk</h2>
+                </div>
+                <div class="products-grid" id="products-grid">
+                    <!-- Products will be loaded from Firebase -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="about-section">
+            <div class="container">
+                <h2 class="section-title">Kenapa Pilih KidJoy Store?</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <h3>Kualitas Terjamin</h3>
+                            <p>Semua mainan sudah melewati quality control dan aman untuk anak</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div>
+                            <h3>Harga Terjangkau</h3>
+                            <p>Import langsung dari China, harga lebih murah dari toko lain</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div>
+                            <h3>Pengiriman Terpercaya</h3>
+                            <p>Packaging aman, estimasi 2-3 minggu sampai seluruh Indonesia</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div>
+                            <h3>Customer Service</h3>
+                            <p>Respon cepat, konsultasi gratis pilih mainan yang tepat</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact" id="contact-section">
+            <div class="container">
+                <h2 class="section-title">Hubungi Kami</h2>
+                <p>Mau pesan atau tanya-tanya dulu? Chat aja langsung!</p>
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <h3>WhatsApp</h3>
+                        <p>+62 822-7688-2317</p>
+                        <p>Chat 24/7</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-instagram"></i>
+                        <h3>Instagram</h3>
+                        <p>@kidjoystore</p>
+                        <p>Follow untuk update produk terbaru</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Email</h3>
+                        <p>hello@kidjoystore.com</p>
+                        <p>For business inquiries</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="admin-panel">
+        <div class="container">
+            <div class="admin-header">
+                <h2><i class="fas fa-cog"></i> Admin Dashboard</h2>
+                <p>Kelola produk dan kategori toko KidJoy Store - Real-time dengan Firebase</p>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="showTab('categories-tab')">Kelola Kategori</button>
+                <button class="tab-btn" onclick="showTab('products-tab')">Kelola Produk</button>
+                <button class="tab-btn" onclick="showTab('orders-tab')">Pesanan</button>
+            </div>
+
+            <!-- Categories Tab -->
+            <div class="tab-content active" id="categories-tab">
+                <h3>Kelola Kategori</h3>
+                <form id="category-form">
+                    <div class="form-group">
+                        <label>Nama Kategori</label>
+                        <input type="text" id="category-name" placeholder="Masukkan nama kategori" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi</label>
+                        <textarea id="category-description" placeholder="Deskripsi kategori"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Icon (Font Awesome class)</label>
+                        <input type="text" id="category-icon" placeholder="fas fa-puzzle-piece" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Tambah Kategori</button>
+                    <button type="button" class="btn" onclick="resetCategoryForm()">Reset</button>
+                </form>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Deskripsi</th>
+                            <th>Icon</th>
+                            <th>Jumlah Produk</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categories-table">
+                        <!-- Categories will be loaded from Firebase -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Products Tab -->
+            <div class="tab-content" id="products-tab">
+                <h3>Kelola Produk</h3>
+                <form id="product-form">
+                    <div class="form-group">
+                        <label>Nama Produk</label>
+                        <input type="text" id="product-name" placeholder="Masukkan nama produk" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select id="product-category" required>
+                            <option value="">Pilih kategori</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga (Rp)</label>
+                        <input type="number" id="product-price" placeholder="50000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi</label>
+                        <textarea id="product-description" placeholder="Deskripsi produk"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Gambar Produk</label>
+                        <div class="file-input-container">
+                            <button type="button" class="file-input-button" id="file-input-button">
+                                <i class="fas fa-image"></i>
+                                <span id="file-name">Pilih gambar produk...</span>
+                            </button>
+                            <input type="file" class="file-input-hidden" id="product-image" accept="image/*">
+                        </div>
+                        <img id="image-preview" class="image-preview" alt="Preview">
+                        <div id="upload-progress" style="display: none; margin-top: 10px;">
+                            <div style="background: #f0f0f0; border-radius: 10px; overflow: hidden;">
+                                <div id="upload-bar" style="height: 20px; background: #667eea; width: 0%; transition: width 0.3s;"></div>
+                            </div>
+                            <small id="upload-text">Uploading...</small>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Tambah Produk</button>
+                    <button type="button" class="btn" onclick="resetProductForm()">Reset</button>
+                </form>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Kategori</th>
+                            <th>Harga</th>
+                            <th>Deskripsi</th>
+                            <th>Gambar</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-table">
+                        <!-- Products will be loaded from Firebase -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Orders Tab -->
+            <div class="tab-content" id="orders-tab">
+                <h3>Pesanan Masuk</h3>
+                <p>Semua pesanan akan masuk melalui WhatsApp. Pastikan untuk membalas chat customer dengan cepat!</p>
+                <div class="contact-item" style="text-align: center; padding: 2rem;">
+                    <i class="fab fa-whatsapp" style="font-size: 4rem; color: #25d366;"></i>
+                    <h3>WhatsApp Business</h3>
+                    <p>+62 822-7688-2317</p>
+                    <a href="https://wa.me/6282276882317" target="_blank" class="btn btn-success">
+                        <i class="fab fa-whatsapp"></i> Buka WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="login-modal">
+        <div class="login-content">
+            <div class="login-header">
+                <i class="fas fa-lock"></i>
+                <h3>Admin Login</h3>
+                <p>Masukkan password untuk mengakses admin panel</p>
+            </div>
+            <form id="login-form" class="login-form">
+                <div class="password-input">
+                    <input type="password" id="admin-password" placeholder="Masukkan password admin" required>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword()"></i>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <div class="login-error" id="login-error">
+                    Password salah! Silakan coba lagi.
+                </div>
+            </form>
+            <button type="button" onclick="closeLoginModal()" style="background: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
+                Batal
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Add Modal -->
+    <div id="quick-add-modal" class="quick-add-modal">
+        <div class="quick-add-content">
+            <span class="close" onclick="closeQuickAdd()">&times;</span>
+            <h3>Quick Add Produk</h3>
+            <form id="quick-add-form">
+                <div class="form-group">
+                    <label>Nama Produk</label>
+                    <input type="text" id="quick-product-name" placeholder="Masukkan nama produk" required>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="quick-product-category" required>
+                        <option value="">Pilih kategori</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Harga (Rp)</label>
+                    <input type="number" id="quick-product-price" placeholder="50000" required>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi</label>
+                    <textarea id="quick-product-description" placeholder="Deskripsi produk (opsional)"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Gambar Produk</label>
+                    <div class="file-input-container">
+                        <button type="button" class="file-input-button" id="quick-file-input-button">
+                            <i class="fas fa-image"></i>
+                            <span id="quick-file-name">Pilih gambar produk...</span>
+                        </button>
+                        <input type="file" class="file-input-hidden" id="quick-product-image" accept="image/*">
+                    </div>
+                    <img id="quick-image-preview" class="image-preview" alt="Preview">
+                </div>
+                <button type="submit" class="btn btn-success">Tambah Produk</button>
+                <button type="button" class="btn" onclick="closeQuickAdd()">Batal</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Status Elements -->
+    <div id="admin-status" class="admin-status">
+        <i class="fas fa-user-shield"></i> Admin Mode
+        <button class="quick-add-btn" onclick="openQuickAdd()">
+            <i class="fas fa-plus"></i> Quick Add
+        </button>
+        <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+    </div>
+
+    <div id="data-counter" class="data-counter">
+        <i class="fas fa-database"></i> 0 Kategori | 0 Produk
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container">
+            <p>&copy; 2025 KidJoy Store. Mainan Seru, Anak Happy! 🚀</p>
+            <p>Made with ❤️ for Indonesian parents</p>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/6282276882317?text=Halo%20KidJoy%20Store,%20saya%20mau%20tanya%20tentang%20mainan..." class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i> Chat Sekarang
+    </a>
+
+    <script>
+        // Global Variables
+        let categories = [];
+        let products = [];
+        let editingItemId = null;
+        let editingType = null;
+        let isAdminLoggedIn = false;
+        let firebaseReady = false;
+
+        // Admin credentials
+        const ADMIN_PASSWORD = 'kidjoy2025admin';
+
+        // Firebase Helper Functions
+        async function initializeFirebase() {
+            try {
+                showFirebaseStatus('loading', 'Connecting to Firebase...');
+                
+                // Wait for Firebase to be available
+                while (!window.firebase) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+
+                // Test Firebase connection
+                const testRef = window.firebase.ref(window.firebase.database, 'kidjoyStore/test');
+                await window.firebase.set(testRef, { connected: true, timestamp: Date.now() });
+                
+                firebaseReady = true;
+                showFirebaseStatus('online', 'Connected to Firebase');
+                
+                // Load initial data
+                await loadDataFromFirebase();
+                
+                console.log('Firebase initialized successfully!');
+            } catch (error) {
+                console.error('Firebase initialization error:', error);
+                showFirebaseStatus('offline', 'Firebase connection failed');
+                
+                // Fall back to default data
+                initializeDefaultData();
+            }
+        }
+
+        function showFirebaseStatus(status, message) {
+            const statusElement = document.getElementById('firebase-status');
+            if (statusElement) {
+                statusElement.className = `firebase-status ${status}`;
+                statusElement.innerHTML = `<i class="fas fa-cloud"></i> ${message}`;
+                statusElement.style.display = 'block';
+                
+                if (status === 'online') {
+                    setTimeout(() => {
+                        statusElement.style.display = 'none';
+                    }, 3000);
+                }
+            }
+        }
+
+        async function loadDataFromFirebase() {
+            try {
+                const { database, ref, get } = window.firebase;
+                
+                // Load categories
+                const categoriesRef = ref(database, 'kidjoyStore/categories');
+                const categoriesSnapshot = await get(categoriesRef);
+                if (categoriesSnapshot.exists()) {
+                    const categoriesData = categoriesSnapshot.val();
+                    categories = Object.keys(categoriesData).map(key => ({
+                        id: key,
+                        ...categoriesData[key]
+                    }));
+                } else {
+                    categories = getDefaultCategories();
+                    await saveCategoriesToFirebase();
+                }
+
+                // Load products
+                const productsRef = ref(database, 'kidjoyStore/products');
+                const productsSnapshot = await get(productsRef);
+                if (productsSnapshot.exists()) {
+                    const productsData = productsSnapshot.val();
+                    products = Object.keys(productsData).map(key => ({
+                        id: key,
+                        ...productsData[key]
+                    }));
+                } else {
+                    products = getDefaultProducts();
+                    await saveProductsToFirebase();
+                }
+
+                // Setup real-time listeners
+                setupRealtimeListeners();
+                
+                // Update UI
+                loadCategories();
+                loadProducts();
+                loadCategoryOptions();
+                updateDataCounter();
+                
+            } catch (error) {
+                console.error('Error loading data from Firebase:', error);
+                initializeDefaultData();
+            }
+        }
+
+        function setupRealtimeListeners() {
+            const { database, ref, onValue } = window.firebase;
+
+            // Listen for category changes
+            const categoriesRef = ref(database, 'kidjoyStore/categories');
+            onValue(categoriesRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const categoriesData = snapshot.val();
+                    categories = Object.keys(categoriesData).map(key => ({
+                        id: key,
+                        ...categoriesData[key]
+                    }));
+                    loadCategories();
+                    loadCategoryOptions();
+                    updateDataCounter();
+                }
+            });
+
+            // Listen for product changes
+            const productsRef = ref(database, 'kidjoyStore/products');
+            onValue(productsRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const productsData = snapshot.val();
+                    products = Object.keys(productsData).map(key => ({
+                        id: key,
+                        ...productsData[key]
+                    }));
+                    loadProducts();
+                    loadCategories(); // Reload to update product counts
+                    updateDataCounter();
+                }
+            });
+        }
+
+        async function saveCategoriesToFirebase() {
+            if (!firebaseReady) return;
+            try {
+                const { database, ref, set } = window.firebase;
+                const categoriesRef = ref(database, 'kidjoyStore/categories');
+                const categoriesData = {};
+                categories.forEach(category => {
+                    categoriesData[category.id] = {
+                        name: category.name,
+                        description: category.description,
+                        icon: category.icon,
+                        createdAt: category.createdAt || Date.now(),
+                        updatedAt: Date.now()
+                    };
+                });
+                await set(categoriesRef, categoriesData);
+            } catch (error) {
+                console.error('Error saving categories to Firebase:', error);
+            }
+        }
+
+        async function saveProductsToFirebase() {
+            if (!firebaseReady) return;
+            try {
+                const { database, ref, set } = window.firebase;
+                const productsRef = ref(database, 'kidjoyStore/products');
+                const productsData = {};
+                products.forEach(product => {
+                    productsData[product.id] = {
+                        name: product.name,
+                        categoryId: product.categoryId,
+                        price: product.price,
+                        description: product.description,
+                        image: product.image,
+                        createdAt: product.createdAt || Date.now(),
+                        updatedAt: Date.now()
+                    };
+                });
+                await set(productsRef, productsData);
+            } catch (error) {
+                console.error('Error saving products to Firebase:', error);
+            }
+        }
+
+        async function uploadImageToFirebase(file, path) {
+            try {
+                const { storage, storageRef, uploadBytes, getDownloadURL } = window.firebase;
+                const imageRef = storageRef(storage, `images/${path}/${Date.now()}_${file.name}`);
+                
+                // Show upload progress
+                showUploadProgress(true);
+                
+                const snapshot = await uploadBytes(imageRef, file);
+                const downloadURL = await getDownloadURL(snapshot.ref);
+                
+                showUploadProgress(false);
+                return downloadURL;
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                showUploadProgress(false);
+                throw error;
+            }
+        }
+
+        function showUploadProgress(show, progress = 0) {
+            const progressElement = document.getElementById('upload-progress');
+            const progressBar = document.getElementById('upload-bar');
+            const progressText = document.getElementById('upload-text');
+            
+            if (progressElement) {
+                if (show) {
+                    progressElement.style.display = 'block';
+                    progressBar.style.width = progress + '%';
+                    progressText.textContent = progress < 100 ? `Uploading... ${progress}%` : 'Processing...';
+                } else {
+                    progressElement.style.display = 'none';
+                }
+            }
+        }
+
+        function initializeDefaultData() {
+            categories = getDefaultCategories();
+            products = getDefaultProducts();
+            loadCategories();
+            loadProducts();
+            loadCategoryOptions();
+            updateDataCounter();
+        }
+
+        function getDefaultCategories() {
+            return [
+                {
+                    id: 'cat_1',
+                    name: 'Mainan Edukatif',
+                    description: 'Puzzle, building blocks, dan mainan yang mengasah kreativitas anak',
+                    icon: 'fas fa-puzzle-piece',
+                    createdAt: Date.now()
+                },
+                {
+                    id: 'cat_2',
+                    name: 'Fidget Toys',
+                    description: 'Pop it, simple dimple, dan mainan anti stress untuk anak',
+                    icon: 'fas fa-hand-paper',
+                    createdAt: Date.now()
+                },
+                {
+                    id: 'cat_3',
+                    name: 'Action Figures',
+                    description: 'Koleksi figure superhero dan karakter anime favorit',
+                    icon: 'fas fa-user-ninja',
+                    createdAt: Date.now()
+                },
+                {
+                    id: 'cat_4',
+                    name: 'Mainan Bayi',
+                    description: 'Teething toys, soft toys aman untuk bayi dan toddler',
+                    icon: 'fas fa-baby',
+                    createdAt: Date.now()
+                },
+                {
+                    id: 'cat_5',
+                    name: 'Remote Control',
+                    description: 'Mini drone, mobil RC, dan mainan canggih lainnya',
+                    icon: 'fas fa-helicopter',
+                    createdAt: Date.now()
+                }
+            ];
+        }
+
+        function getDefaultProducts() {
+            return [
+                {
+                    id: 'prod_1',
+                    name: 'Puzzle Kayu Alphabet',
+                    categoryId: 'cat_1',
+                    price: 45000,
+                    description: 'Puzzle kayu dengan huruf A-Z, membantu anak belajar alphabet',
+                    image: '',
+                    createdAt: Date.now()
+                },
+                {
+                    id: 'prod_2',
+                    name: 'Building Blocks 100pcs',
+                    categoryId: 'cat_1',
+                    price: 85000,
+                    description: 'Set building blocks warna-warni untuk meningkatkan kreativitas',
+                    image: '',
+                    createdAt: Date.now()
+                },
+                {
+                    id: 'prod_3',
+                    name: 'Pop It Rainbow',
+                    categoryId: 'cat_2',
+                    price: 25000,
+                    description: 'Pop it bentuk rainbow dengan berbagai warna menarik',
+                    image: '',
+                    createdAt: Date.now()
+                },
+                {
+                    id: 'prod_4',
+                    name: 'Simple Dimple Unicorn',
+                    categoryId: 'cat_2',
+                    price: 15000,
+                    description: 'Fidget toy bentuk unicorn yang lucu dan menenangkan',
+                    image: '',
+                    createdAt: Date.now()
+                },
+                {
+                    id: 'prod_5',
+                    name: 'Action Figure Superhero',
+                    categoryId: 'cat_3',
+                    price: 35000,
+                    description: 'Figure superhero dengan artikulasi lengkap',
+                    image: '',
+                    createdAt: Date.now()
+                }
+            ];
+        }
+
+        // UI Functions
+        function updateDataCounter() {
+            const counter = document.getElementById('data-counter');
+            if (counter) {
+                const totalCategories = categories.length;
+                const totalProducts = products.length;
+                counter.innerHTML = `<i class="fas fa-database"></i> ${totalCategories} Kategori | ${totalProducts} Produk`;
+            }
+        }
+
+        function goHome() {
+            navigateTo('home');
+        }
+
+        function navigateTo(section) {
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            // Hide admin panel and show main content
+            document.getElementById('main-content').style.display = 'block';
+            document.getElementById('admin-panel').style.display = 'none';
+            document.getElementById('footer').style.display = 'block';
+            document.getElementById('admin-status').style.display = 'none';
+            
+            // Hide products section
+            document.getElementById('products-section').classList.remove('active');
+            
+            // Navigate to specific sections
+            switch(section) {
+                case 'home':
+                    document.getElementById('home-section').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 'categories':
+                    document.getElementById('categories-section').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 'about':
+                    document.getElementById('about-section').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 'contact':
+                    document.getElementById('contact-section').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                default:
+                    document.getElementById('home-section').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function openAdminPanel() {
+            if (isAdminLoggedIn) {
+                showAdminDashboard();
+            } else {
+                showLoginModal();
+            }
+        }
+
+        function showLoginModal() {
+            const modal = document.getElementById('login-modal');
+            if (modal) {
+                modal.style.display = 'block';
+                const passwordField = document.getElementById('admin-password');
+                if (passwordField) {
+                    setTimeout(() => {
+                        passwordField.focus();
+                    }, 200);
+                }
+            }
+        }
+
+        function showAdminDashboard() {
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+            document.getElementById('footer').style.display = 'none';
+            document.getElementById('admin-status').style.display = 'block';
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+
+        function scrollToContact() {
+            document.getElementById('contact-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showProducts(categoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            if (!category) return;
+
+            document.getElementById('category-title').textContent = category.name;
+            document.getElementById('products-section').classList.add('active');
+            document.getElementById('products-section').scrollIntoView({ behavior: 'smooth' });
+
+            const categoryProducts = products.filter(p => p.categoryId === categoryId);
+            const productsGrid = document.getElementById('products-grid');
+            
+            productsGrid.innerHTML = categoryProducts.map(product => `
+                <div class="product-card">
+                    <div class="product-image">
+                        ${product.image && product.image.trim() !== '' ? 
+                            `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover; display: block;">` : 
+                            '<i class="fas fa-image"></i>'
+                        }
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">Rp ${product.price.toLocaleString('id-ID')}</div>
+                        <div class="product-description">${product.description}</div>
+                        <button class="order-btn" onclick="orderProduct('${product.name}', ${product.price})">
+                            <i class="fab fa-whatsapp"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function orderProduct(productName, price) {
+            const message = `Halo KidJoy Store! Saya mau pesan *${productName}* dengan harga Rp ${price.toLocaleString('id-ID')}. Bisa info detail dan cara pemesanannya?`;
+            const whatsappUrl = `https://wa.me/6282276882317?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function showSection(section) {
+            navigateTo(section);
+        }
+
+        // Login Functions
+        function closeLoginModal() {
+            const modal = document.getElementById('login-modal');
+            const errorDiv = document.getElementById('login-error');
+            const passwordField = document.getElementById('admin-password');
+            
+            if (modal) modal.style.display = 'none';
+            if (errorDiv) errorDiv.style.display = 'none';
+            if (passwordField) passwordField.value = '';
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('admin-password');
+            const toggleIcon = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        function logout() {
+            isAdminLoggedIn = false;
+            document.getElementById('admin-status').style.display = 'none';
+            navigateTo('home');
+            alert('Logout berhasil! Terima kasih telah menggunakan admin panel.');
+        }
+
+        // Admin Functions
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Category Management
+        function loadCategories() {
+            const grid = document.getElementById('category-grid');
+            const table = document.getElementById('categories-table');
+            
+            // Load to main page
+            grid.innerHTML = categories.map(category => {
+                const productCount = products.filter(p => p.categoryId === category.id).length;
+                return `
+                    <div class="category-card" onclick="showProducts('${category.id}')">
+                        <div class="product-count">${productCount}</div>
+                        <div class="category-icon">
+                            <i class="${category.icon}"></i>
+                        </div>
+                        <h3>${category.name}</h3>
+                        <p>${category.description}</p>
+                    </div>
+                `;
+            }).join('');
+
+            // Load to admin table
+            table.innerHTML = categories.map(category => {
+                const productCount = products.filter(p => p.categoryId === category.id).length;
+                return `
+                    <tr>
+                        <td>${category.name}</td>
+                        <td>${category.description}</td>
+                        <td><i class="${category.icon}"></i> ${category.icon}</td>
+                        <td>${productCount}</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm" onclick="editCategory('${category.id}')">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteCategory('${category.id}')">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function loadCategoryOptions() {
+            const select = document.getElementById('product-category');
+            const quickSelect = document.getElementById('quick-product-category');
+            
+            const options = '<option value="">Pilih kategori</option>' + 
+                categories.map(category => `<option value="${category.id}">${category.name}</option>`).join('');
+            
+            if (select) select.innerHTML = options;
+            if (quickSelect) quickSelect.innerHTML = options;
+        }
+
+        function resetCategoryForm() {
+            document.getElementById('category-form').reset();
+            editingItemId = null;
+            editingType = null;
+        }
+
+        function editCategory(id) {
+            const category = categories.find(c => c.id === id);
+            if (!category) return;
+
+            document.getElementById('category-name').value = category.name;
+            document.getElementById('category-description').value = category.description;
+            document.getElementById('category-icon').value = category.icon;
+            
+            editingItemId = id;
+            editingType = 'category';
+        }
+
+        // Product Management
+        function loadProducts() {
+            const table = document.getElementById('products-table');
+            
+            table.innerHTML = products.map(product => {
+                const category = categories.find(c => c.id === product.categoryId);
+                return `
+                    <tr>
+                        <td>${product.name}</td>
+                        <td>${category ? category.name : 'Tidak ditemukan'}</td>
+                        <td>Rp ${product.price.toLocaleString('id-ID')}</td>
+                        <td>${product.description.substring(0, 50)}${product.description.length > 50 ? '...' : ''}</td>
+                        <td>
+                            ${product.image && product.image.trim() !== '' ? 
+                                `<img src="${product.image}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">` : 
+                                '<i class="fas fa-times text-muted"></i>'
+                            }
+                        </td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm" onclick="editProduct('${product.id}')">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.id}')">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function resetProductForm() {
+            document.getElementById('product-form').reset();
+            document.getElementById('file-name').textContent = 'Pilih gambar produk...';
+            document.getElementById('image-preview').style.display = 'none';
+            document.getElementById('image-preview').src = '';
+            editingItemId = null;
+            editingType = null;
+        }
+
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('product-name').value = product.name;
+            document.getElementById('product-category').value = product.categoryId;
+            document.getElementById('product-price').value = product.price;
+            document.getElementById('product-description').value = product.description;
+            
+            if (product.image && product.image.trim() !== '') {
+                document.getElementById('file-name').textContent = 'Gambar sudah ada (klik untuk ganti)';
+                const preview = document.getElementById('image-preview');
+                preview.src = product.image;
+                preview.style.display = 'block';
+            } else {
+                document.getElementById('file-name').textContent = 'Pilih gambar produk...';
+                document.getElementById('image-preview').style.display = 'none';
+            }
+            
+            editingItemId = id;
+            editingType = 'product';
+        }
+
+        async function deleteProduct(id) {
+            if (confirm('Yakin mau hapus produk ini?')) {
+                products = products.filter(p => p.id !== id);
+                await saveProductsToFirebase();
+                alert('Produk berhasil dihapus!');
+            }
+        }
+
+        // Quick Add Functions
+        function openQuickAdd() {
+            loadCategoryOptions();
+            document.getElementById('quick-add-modal').style.display = 'block';
+            const nameField = document.getElementById('quick-product-name');
+            if (nameField) {
+                nameField.focus();
+            }
+        }
+
+        function closeQuickAdd() {
+            document.getElementById('quick-add-modal').style.display = 'none';
+            document.getElementById('quick-add-form').reset();
+            document.getElementById('quick-file-name').textContent = 'Pilih gambar produk...';
+            document.getElementById('quick-image-preview').style.display = 'none';
+            document.getElementById('quick-image-preview').src = '';
+        }
+
+        // File Upload Setup
+        function setupFileUpload() {
+            // Main product form file upload
+            const fileInput = document.getElementById('product-image');
+            const fileButton = document.getElementById('file-input-button');
+            const fileName = document.getElementById('file-name');
+            const preview = document.getElementById('image-preview');
+
+            if (fileInput && fileButton) {
+                fileButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    fileInput.click();
+                });
+                
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        if (!file.type.startsWith('image/')) {
+                            alert('Mohon pilih file gambar yang valid (JPG, PNG, GIF, dll)');
+                            return;
+                        }
+                        
+                        if (file.size > 5 * 1024 * 1024) {
+                            alert('Ukuran file terlalu besar. Maksimal 5MB.');
+                            return;
+                        }
+                        
+                        fileName.textContent = file.name;
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            try {
+                                preview.src = e.target.result;
+                                preview.style.display = 'block';
+                            } catch (error) {
+                                console.error('Error loading image preview:', error);
+                                alert('Gagal memuat preview gambar');
+                            }
+                        };
+                        reader.onerror = function() {
+                            alert('Gagal membaca file gambar');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Quick add form file upload
+            const quickFileInput = document.getElementById('quick-product-image');
+            const quickFileButton = document.getElementById('quick-file-input-button');
+            const quickFileName = document.getElementById('quick-file-name');
+            const quickPreview = document.getElementById('quick-image-preview');
+
+            if (quickFileInput && quickFileButton) {
+                quickFileButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    quickFileInput.click();
+                });
+
+                quickFileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        if (!file.type.startsWith('image/')) {
+                            alert('Mohon pilih file gambar yang valid (JPG, PNG, GIF, dll)');
+                            return;
+                        }
+                        
+                        if (file.size > 5 * 1024 * 1024) {
+                            alert('Ukuran file terlalu besar. Maksimal 5MB.');
+                            return;
+                        }
+                        
+                        quickFileName.textContent = file.name;
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            try {
+                                quickPreview.src = e.target.result;
+                                quickPreview.style.display = 'block';
+                            } catch (error) {
+                                console.error('Error loading image preview:', error);
+                                alert('Gagal memuat preview gambar');
+                            }
+                        };
+                        reader.onerror = function() {
+                            alert('Gagal membaca file gambar');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        // Event Listeners
+        window.addEventListener('click', function(event) {
+            const loginModal = document.getElementById('login-modal');
+            const quickAddModal = document.getElementById('quick-add-modal');
+            
+            if (event.target === loginModal) {
+                closeLoginModal();
+            }
+            if (event.target === quickAddModal) {
+                closeQuickAdd();
+            }
+        });
+
+        // Form Handlers
+        function initializeFormHandlers() {
+            // Category form
+            const categoryForm = document.getElementById('category-form');
+            if (categoryForm && !categoryForm.hasAttribute('data-initialized')) {
+                categoryForm.setAttribute('data-initialized', 'true');
+                categoryForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const name = document.getElementById('category-name').value;
+                    const description = document.getElementById('category-description').value;
+                    const icon = document.getElementById('category-icon').value;
+
+                    if (editingItemId && editingType === 'category') {
+                        const categoryIndex = categories.findIndex(c => c.id === editingItemId);
+                        if (categoryIndex !== -1) {
+                            categories[categoryIndex] = {
+                                ...categories[categoryIndex],
+                                name,
+                                description,
+                                icon,
+                                updatedAt: Date.now()
+                            };
+                        }
+                        editingItemId = null;
+                        editingType = null;
+                    } else {
+                        const newId = 'cat_' + Date.now();
+                        categories.push({
+                            id: newId,
+                            name,
+                            description,
+                            icon,
+                            createdAt: Date.now()
+                        });
+                    }
+
+                    await saveCategoriesToFirebase();
+                    resetCategoryForm();
+                    alert('Kategori berhasil disimpan!');
+                });
+            }
+
+            // Product form
+            const productForm = document.getElementById('product-form');
+            if (productForm && !productForm.hasAttribute('data-initialized')) {
+                productForm.setAttribute('data-initialized', 'true');
+                productForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const name = document.getElementById('product-name').value;
+                    const categoryId = document.getElementById('product-category').value;
+                    const price = parseInt(document.getElementById('product-price').value);
+                    const description = document.getElementById('product-description').value;
+                    const imageFile = document.getElementById('product-image').files[0];
+
+                    if (!name || !categoryId || !price) {
+                        alert('Mohon isi semua field yang wajib!');
+                        return;
+                    }
+
+                    let imageUrl = '';
+
+                    try {
+                        // Upload image to Firebase Storage if file is selected
+                        if (imageFile) {
+                            imageUrl = await uploadImageToFirebase(imageFile, 'products');
+                        } else if (editingItemId && editingType === 'product') {
+                            // Keep existing image if editing and no new image
+                            const existingProduct = products.find(p => p.id === editingItemId);
+                            imageUrl = existingProduct ? existingProduct.image : '';
+                        }
+
+                        if (editingItemId && editingType === 'product') {
+                            const productIndex = products.findIndex(p => p.id === editingItemId);
+                            if (productIndex !== -1) {
+                                products[productIndex] = {
+                                    ...products[productIndex],
+                                    name,
+                                    categoryId,
+                                    price,
+                                    description,
+                                    image: imageUrl,
+                                    updatedAt: Date.now()
+                                };
+                            }
+                            editingItemId = null;
+                            editingType = null;
+                            alert('Produk berhasil diupdate!');
+                        } else {
+                            const newId = 'prod_' + Date.now();
+                            products.push({
+                                id: newId,
+                                name,
+                                categoryId,
+                                price,
+                                description,
+                                image: imageUrl,
+                                createdAt: Date.now()
+                            });
+                            alert('Produk berhasil ditambahkan!');
+                        }
+
+                        await saveProductsToFirebase();
+                        resetProductForm();
+                    } catch (error) {
+                        console.error('Error saving product:', error);
+                        alert('Terjadi kesalahan saat menyimpan produk: ' + error.message);
+                    }
+                });
+            }
+
+            // Quick Add form
+            const quickAddForm = document.getElementById('quick-add-form');
+            if (quickAddForm && !quickAddForm.hasAttribute('data-initialized')) {
+                quickAddForm.setAttribute('data-initialized', 'true');
+                quickAddForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const name = document.getElementById('quick-product-name').value;
+                    const categoryId = document.getElementById('quick-product-category').value;
+                    const price = parseInt(document.getElementById('quick-product-price').value);
+                    const description = document.getElementById('quick-product-description').value;
+                    const imageFile = document.getElementById('quick-product-image').files[0];
+
+                    if (!name || !categoryId || !price) {
+                        alert('Mohon isi nama produk, kategori, dan harga!');
+                        return;
+                    }
+
+                    try {
+                        let imageUrl = '';
+
+                        // Upload image to Firebase Storage if file is selected
+                        if (imageFile) {
+                            imageUrl = await uploadImageToFirebase(imageFile, 'products');
+                        }
+
+                        const newId = 'prod_' + Date.now();
+                        products.push({
+                            id: newId,
+                            name,
+                            categoryId,
+                            price,
+                            description: description || 'Produk berkualitas import dari China',
+                            image: imageUrl,
+                            createdAt: Date.now()
+                        });
+
+                        await saveProductsToFirebase();
+                        closeQuickAdd();
+                        alert(`✅ Produk "${name}" berhasil ditambahkan!`);
+                    } catch (error) {
+                        console.error('Error saving quick product:', error);
+                        alert('Terjadi kesalahan saat menyimpan produk: ' + error.message);
+                    }
+                });
+            }
+
+            // Login form
+            const loginForm = document.getElementById('login-form');
+            if (loginForm && !loginForm.hasAttribute('data-initialized')) {
+                loginForm.setAttribute('data-initialized', 'true');
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const password = document.getElementById('admin-password').value;
+                    const errorDiv = document.getElementById('login-error');
+                    
+                    if (password === ADMIN_PASSWORD) {
+                        isAdminLoggedIn = true;
+                        closeLoginModal();
+                        showAdminDashboard();
+                        alert('Login berhasil! Selamat datang di admin panel KidJoy Store.');
+                    } else {
+                        if (errorDiv) {
+                            errorDiv.style.display = 'block';
+                        }
+                        document.getElementById('admin-password').value = '';
+                        document.getElementById('admin-password').focus();
+                        
+                        setTimeout(() => {
+                            if (errorDiv) errorDiv.style.display = 'none';
+                        }, 3000);
+                    }
+                });
+            }
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('DOM Content Loaded - Starting initialization...');
+            
+            // Initialize Firebase
+            await initializeFirebase();
+            
+            // Setup file uploads
+            setTimeout(() => {
+                setupFileUpload();
+                console.log('File upload setup completed');
+            }, 500);
+            
+            // Initialize form handlers
+            setTimeout(() => {
+                initializeFormHandlers();
+                console.log('Form handlers initialized');
+            }, 700);
+            
+            // Navigate to home
+            setTimeout(() => {
+                navigateTo('home');
+            }, 1000);
+
+            console.log('Initialization completed');
+        });
+
+        // Animation Observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe category cards after they're loaded
+        setTimeout(() => {
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        }, 1500);
+
+        // Debug function
+        function debugFirebase() {
+            console.log('=== FIREBASE DEBUG ===');
+            console.log('Firebase Ready:', firebaseReady);
+            console.log('Categories:', categories);
+            console.log('Products:', products);
+            console.log('Firebase object:', window.firebase);
+            console.log('=== END DEBUG ===');
+        }
+
+        // Make debug function available globally
+        window.debugFirebase = debugFirebase;
+        
+        // Auto-save notification for offline mode
+        function showOfflineNotification() {
+            if (!firebaseReady) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #ffc107;
+                    color: #333;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    z-index: 10000;
+                    font-size: 14px;
+                `;
+                notification.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Mode Offline - Data tersimpan lokal';
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            }
+        }
+
+        // Show offline notification every 5 minutes if Firebase is not ready
+        setInterval(() => {
+            if (!firebaseReady) {
+                showOfflineNotification();
+            }
+        }, 300000); // 5 minutes
+    </script>
+</body>
+</html>
